@@ -6,6 +6,30 @@
 
 // TODO: define your helper functions here
 
+//! Given a pixel, extract its 8-bit red component (bits 24-31).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the red value of the pixel
+uint32_t get_r( uint32_t pixel );
+
+//! Given a pixel, extract its 8-bit green component (bits 16-23).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the green value of the pixel
+uint32_t get_g( uint32_t pixel );
+
+//! Given a pixel, extract its 8-bit blue component (bits 8-15).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the blue value of the pixel
+uint32_t get_b( uint32_t pixel );
+
+//! Given a pixel, extract its 8-bit alpha component (bits 0-7).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the alpha value of the pixel
+uint32_t get_a( uint32_t pixel );
+
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
 //! in the color component information should be inverted
