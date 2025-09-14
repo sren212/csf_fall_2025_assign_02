@@ -11,7 +11,7 @@
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the red value of the pixel
 uint32_t get_r( uint32_t pixel ){
-  uint32_t r = (pixel << 24) >> 24;
+  uint32_t r = pixel >> 24;
   return r;
 }
 
@@ -20,7 +20,7 @@ uint32_t get_r( uint32_t pixel ){
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the green value of the pixel
 uint32_t get_g( uint32_t pixel ){
-  uint32_t g = (pixel << 16) >> 24;
+  uint32_t g = (pixel << 8) >> 24;
   return g;
 }
 
@@ -29,7 +29,7 @@ uint32_t get_g( uint32_t pixel ){
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the blue value of the pixel
 uint32_t get_b( uint32_t pixel ){
-  uint32_t b = (pixel << 8) >> 24;
+  uint32_t b = (pixel << 16) >> 24;
   return b;
 }
 
@@ -38,8 +38,29 @@ uint32_t get_b( uint32_t pixel ){
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the alpha value of the pixel
 uint32_t get_a( uint32_t pixel ){
-  uint32_t a = pixel >> 24;
+  uint32_t a = (pixel << 24) >> 24;
   return a;
+}
+
+//! Given red, green, blue, and alpha values, construct a 32-bit
+//! pixel with r being in bits 24-31, b in bits 16-23, g in bits
+//! 8-15, and a in bits 0-7.
+//!
+//! @param r a 32-bit int representing the red component
+//! @param g a 32-bit int representing the green component
+//! @param b a 32-bit int representing the blue component
+//! @param a a 32-bit int representing the alpha component
+//! @return the pixel value
+uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a ) {
+  uint32_t pixel = 0;
+  pixel += r;
+  pixel = pixel << 8;
+  pixel += g;
+  pixel = pixel << 8;
+  pixel += b;
+  pixel = pixel << 8;
+  pixel += a;
+  return pixel;
 }
 
 //! Transform the color component values in each input pixel

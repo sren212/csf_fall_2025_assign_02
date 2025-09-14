@@ -93,6 +93,7 @@ void test_get_r( TestObjs *objs );
 void test_get_g( TestObjs *objs );
 void test_get_b( TestObjs *objs );
 void test_get_a( TestObjs *objs );
+void test_make_pixel( TestObjs *objs );
 void test_complement_basic( TestObjs *objs );
 void test_transpose_basic( TestObjs *objs );
 void test_ellipse_basic( TestObjs *objs );
@@ -114,6 +115,7 @@ int main( int argc, char **argv ) {
   TEST( test_get_g );
   TEST( test_get_b );
   TEST( test_get_a );
+  TEST( test_make_pixel );
   TEST( test_complement_basic );
   TEST( test_transpose_basic );
   TEST( test_ellipse_basic );
@@ -242,39 +244,54 @@ void destroy_img( struct Image *img ) {
 void test_get_r( TestObjs *objs ) {
   struct ExpectedColor test_colors[] = TEST_COLORS;
   char colorChars[] = "rgbcm12345ABCDEPQRST";
-  // loop through test colors and check if test_get_r is right
-  for (int i = 0; i < 40; i++) {
+  // loop through test colors and check if get_r is right
+  for (int i = 0; i < 20; i++) {
     uint32_t color = lookup_color(colorChars[i], test_colors);
-    ASSERT( (color&0xFF000000) == get_r(color) );
+    ASSERT( ((color&0xFF000000) >> 24) == get_r(color) );
   }
 }
 
 void test_get_g( TestObjs *objs ) {
   struct ExpectedColor test_colors[] = TEST_COLORS;
   char colorChars[] = "rgbcm12345ABCDEPQRST";
-  // loop through test colors and check if test_get_r is right
-  for (int i = 0; i < 40; i++) {
+  // loop through test colors and check if get_g is right
+  for (int i = 0; i < 20; i++) {
     uint32_t color = lookup_color(colorChars[i], test_colors);
-    ASSERT( (color&0x00FF0000) == get_g(color) );
+    ASSERT( ((color&0x00FF0000) >> 16) == get_g(color) );
   }
 }
 
 void test_get_b( TestObjs *objs ) {
   struct ExpectedColor test_colors[] = TEST_COLORS;
   char colorChars[] = "rgbcm12345ABCDEPQRST";
-  // loop through test colors and check if test_get_r is right
-  for (int i = 0; i < 40; i++) {
+  // loop through test colors and check if get_b is right
+  for (int i = 0; i < 20; i++) {
     uint32_t color = lookup_color(colorChars[i], test_colors);
-    ASSERT( (color&0x0000FF00) == get_b(color) );
+    ASSERT( ((color&0x0000FF00) >> 8) == get_b(color) );
   }
 }
 
-void test_get_a( TestObjs *objs ) {struct ExpectedColor test_colors[] = TEST_COLORS;
+void test_get_a( TestObjs *objs ) {
+  struct ExpectedColor test_colors[] = TEST_COLORS;
   char colorChars[] = "rgbcm12345ABCDEPQRST";
-  // loop through test colors and check if test_get_r is right
-  for (int i = 0; i < 40; i++) {
+  // loop through test colors and check if get_a is right
+  for (int i = 0; i < 20; i++) {
     uint32_t color = lookup_color(colorChars[i], test_colors);
     ASSERT( (color&0x000000FF) == get_a(color) );
+  }
+}
+
+void test_make_pixel( TestObjs *objs ) {
+  struct ExpectedColor test_colors[] = TEST_COLORS;
+  char colorChars[] = "rgbcm12345ABCDEPQRST";
+  // loop through test colors and check if make_pixel is right
+  for (int i = 0; i < 20; i++) {
+    uint32_t color = lookup_color(colorChars[i], test_colors);
+    uint32_t r = (color&0xFF000000) >> 24;
+    uint32_t g = (color&0x00FF0000) >> 16;
+    uint32_t b = (color&0x0000FF00) >> 8;
+    uint32_t a = (color&0x000000FF);
+    ASSERT( color == make_pixel(r, g, b, a) );
   }
 }
 

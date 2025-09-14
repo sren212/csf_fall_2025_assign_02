@@ -30,6 +30,17 @@ uint32_t get_b( uint32_t pixel );
 //! @return the alpha value of the pixel
 uint32_t get_a( uint32_t pixel );
 
+//! Given red, green, blue, and alpha values, construct a 32-bit
+//! pixel with r being in bits 24-31, b in bits 16-23, g in bits
+//! 8-15, and a in bits 0-7.
+//!
+//! @param r a 32-bit int representing the red component
+//! @param g a 32-bit int representing the green component
+//! @param b a 32-bit int representing the blue component
+//! @param a a 32-bit int representing the alpha component
+//! @return the pixel value
+uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
+
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
 //! in the color component information should be inverted
