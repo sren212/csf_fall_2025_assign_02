@@ -10,25 +10,37 @@
 //!
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the red value of the pixel
-uint32_t get_r( uint32_t pixel );
+uint32_t get_r( uint32_t pixel ){
+  uint32_t r = (pixel << 24) >> 24;
+  return r;
+}
 
 //! Given a pixel, extract its 8-bit green component (bits 16-23).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the green value of the pixel
-uint32_t get_g( uint32_t pixel );
+uint32_t get_g( uint32_t pixel ){
+  uint32_t g = (pixel << 16) >> 24;
+  return g;
+}
 
 //! Given a pixel, extract its 8-bit blue component (bits 8-15).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the blue value of the pixel
-uint32_t get_b( uint32_t pixel );
+uint32_t get_b( uint32_t pixel ){
+  uint32_t b = (pixel << 8) >> 24;
+  return b;
+}
 
 //! Given a pixel, extract its 8-bit alpha component (bits 0-7).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
 //! @return the alpha value of the pixel
-uint32_t get_a( uint32_t pixel );
+uint32_t get_a( uint32_t pixel ){
+  uint32_t a = pixel >> 24;
+  return a;
+}
 
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
