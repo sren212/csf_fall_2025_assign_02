@@ -41,6 +41,14 @@ uint32_t get_a( uint32_t pixel );
 //! @return the pixel value
 uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 
+//! Compute the 1D index of a pixel given an image, row, and column.
+//!
+//! @param img the Image
+//! @param row the row location of the pixel
+//! @param col the column location of the pixel
+//! @return 1D location of the pixel
+uint32_t compute_index( struct Image *img, int32_t row, int32_t col );
+
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
 //! in the color component information should be inverted

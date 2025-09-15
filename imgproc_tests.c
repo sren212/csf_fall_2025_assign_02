@@ -94,6 +94,7 @@ void test_get_g( TestObjs *objs );
 void test_get_b( TestObjs *objs );
 void test_get_a( TestObjs *objs );
 void test_make_pixel( TestObjs *objs );
+void test_compute_index( TestObjs *objs );
 void test_complement_basic( TestObjs *objs );
 void test_transpose_basic( TestObjs *objs );
 void test_ellipse_basic( TestObjs *objs );
@@ -116,6 +117,7 @@ int main( int argc, char **argv ) {
   TEST( test_get_b );
   TEST( test_get_a );
   TEST( test_make_pixel );
+  TEST( test_compute_index );
   TEST( test_complement_basic );
   TEST( test_transpose_basic );
   TEST( test_ellipse_basic );
@@ -293,6 +295,13 @@ void test_make_pixel( TestObjs *objs ) {
     uint32_t a = (color&0x000000FF);
     ASSERT( color == make_pixel(r, g, b, a) );
   }
+}
+
+
+void test_compute_index( TestObjs *objs ) {
+  struct ExpectedColor test_colors[] = TEST_COLORS;
+  char colorChars[] = "rgbcm12345ABCDEPQRST";
+
 }
 
 void test_complement_basic( TestObjs *objs ) {
