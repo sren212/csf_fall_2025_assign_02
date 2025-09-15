@@ -9,35 +9,35 @@
 //! Given a pixel, extract its 8-bit red component (bits 24-31).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the red value of the pixel
+//! @return the red value of the pixel, 0-128 
 uint32_t get_r( uint32_t pixel );
 
 //! Given a pixel, extract its 8-bit green component (bits 16-23).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the green value of the pixel
+//! @return the green value of the pixel, 0-128 
 uint32_t get_g( uint32_t pixel );
 
 //! Given a pixel, extract its 8-bit blue component (bits 8-15).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the blue value of the pixel
+//! @return the blue value of the pixel, 0-128 
 uint32_t get_b( uint32_t pixel );
 
 //! Given a pixel, extract its 8-bit alpha component (bits 0-7).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the alpha value of the pixel
+//! @return the alpha value of the pixel, 0-128 
 uint32_t get_a( uint32_t pixel );
 
 //! Given red, green, blue, and alpha values, construct a 32-bit
 //! pixel with r being in bits 24-31, b in bits 16-23, g in bits
 //! 8-15, and a in bits 0-7.
 //!
-//! @param r a 32-bit int representing the red component
-//! @param g a 32-bit int representing the green component
-//! @param b a 32-bit int representing the blue component
-//! @param a a 32-bit int representing the alpha component
+//! @param r a 32-bit int 0-128 representing the red component
+//! @param g a 32-bit int 0-128 representing the green component
+//! @param b a 32-bit int 0-128 representing the blue component
+//! @param a a 32-bit int 0-128 representing the alpha component
 //! @return the pixel value
 uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 

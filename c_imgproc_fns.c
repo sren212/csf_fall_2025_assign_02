@@ -9,7 +9,7 @@
 //! Given a pixel, extract its 8-bit red component (bits 24-31).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the red value of the pixel
+//! @return the red value of the pixel, 0-128 
 uint32_t get_r( uint32_t pixel ){
   uint32_t r = pixel >> 24;
   return r;
@@ -18,7 +18,7 @@ uint32_t get_r( uint32_t pixel ){
 //! Given a pixel, extract its 8-bit green component (bits 16-23).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the green value of the pixel
+//! @return the green value of the pixel, 0-128 
 uint32_t get_g( uint32_t pixel ){
   uint32_t g = (pixel << 8) >> 24;
   return g;
@@ -27,7 +27,7 @@ uint32_t get_g( uint32_t pixel ){
 //! Given a pixel, extract its 8-bit blue component (bits 8-15).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the blue value of the pixel
+//! @return the blue value of the pixel, 0-128 
 uint32_t get_b( uint32_t pixel ){
   uint32_t b = (pixel << 16) >> 24;
   return b;
@@ -36,7 +36,7 @@ uint32_t get_b( uint32_t pixel ){
 //! Given a pixel, extract its 8-bit alpha component (bits 0-7).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
-//! @return the alpha value of the pixel
+//! @return the alpha value of the pixel, 0-128 
 uint32_t get_a( uint32_t pixel ){
   uint32_t a = (pixel << 24) >> 24;
   return a;
@@ -46,10 +46,10 @@ uint32_t get_a( uint32_t pixel ){
 //! pixel with r being in bits 24-31, b in bits 16-23, g in bits
 //! 8-15, and a in bits 0-7.
 //!
-//! @param r a 32-bit int representing the red component
-//! @param g a 32-bit int representing the green component
-//! @param b a 32-bit int representing the blue component
-//! @param a a 32-bit int representing the alpha component
+//! @param r a 32-bit int 0-128 representing the red component
+//! @param g a 32-bit int 0-128 representing the green component
+//! @param b a 32-bit int 0-128 representing the blue component
+//! @param a a 32-bit int 0-128 representing the alpha component
 //! @return the pixel value
 uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a ) {
   uint32_t pixel = 0;
@@ -101,7 +101,20 @@ void imgproc_complement( struct Image *input_img, struct Image *output_img ) {
 //!         transformation can't be applied because the image
 //!         width and height are not the same
 int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
-  // TODO: implement
+  // check if transpose is possible
+  if (input_img->width != input_img->height) {
+    return 0;
+  }
+  
+  // put transposed pixels into output_img->data
+  for (int row = 0; row < output_img->height; row++) {
+    for (int col = 0; col < output_img->width; col++) {
+      int index_in = compute_index(input_img, col, row);
+      int index_out = compute_index(output_img, row, col);
+      output_img->data[index_out] = input_img->data[index_in];
+    }
+  }
+
   return 1;
 }
 
@@ -159,5 +172,43 @@ void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
 //! @param output_img pointer to the output Image (in which the
 //!                   transformed pixels should be stored)
 void imgproc_emboss( struct Image *input_img, struct Image *output_img ) {
-  // TODO: implement
+  // init the output img
+  output_img = (struct Image *) malloc( sizeof(struct Image) );
+  img_init( output_img, input_img->width, input_img->height );
+
+  // Set top row rgb values to 128
+  for (int col = 0; col < input_img->width; col++) {
+    uint32_t a = get_a(input_img->data[col]);
+    uint32_t pixel = make_pixel(128, 128, 128, a);
+    output_img->data[col] = pixel;
+  }
+
+  // Set left column rgb values to 128
+  for (int row = 0; row < input_img->height; row++) {
+    int index = compute_index(output_img, row, 0);
+    uint32_t a = get_a(input_img->data[index]);
+    uint32_t pixel = make_pixel(128, 128, 128, a);
+    output_img->data[index] = pixel;
+  }
+
+  // calculate each pixel's value and store it in output_img->data
+  for (int row = 1; row < input_img->height; row++) {
+    for (int col = 1; col < input_img->width; col++) {
+      // get current pixel info
+      int index = compute_index(output_img, row, col);
+      uint32_t r = get_r(input_img->data[index]);
+      uint32_t g = get_g(input_img->data[index]);
+      uint32_t b = get_b(input_img->data[index]);
+      uint32_t a = get_a(input_img->data[index]);
+
+      // get upper left pixel info
+      int ul_index = compute_index(output_img, row - 1, col - 1);
+      uint32_t nr = get_r(input_img->data[ul_index]);
+      uint32_t ng = get_g(input_img->data[ul_index]);
+      uint32_t nb = get_b(input_img->data[ul_index]);
+
+      // calculate embossed effect
+      uint32_t diff = nr - r;
+    }
+  }
 }

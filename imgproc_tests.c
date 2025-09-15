@@ -297,11 +297,14 @@ void test_make_pixel( TestObjs *objs ) {
   }
 }
 
-
 void test_compute_index( TestObjs *objs ) {
-  struct ExpectedColor test_colors[] = TEST_COLORS;
-  char colorChars[] = "rgbcm12345ABCDEPQRST";
-
+  int counter = 0;
+  for (int row = 0; row < objs->smiley->height; row++) {
+    for (int col = 0; col < objs->smiley->width; col++) {
+      ASSERT( counter == compute_index(objs->smiley, row, col));
+      counter++;
+    }
+  }
 }
 
 void test_complement_basic( TestObjs *objs ) {
