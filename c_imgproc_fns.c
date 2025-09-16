@@ -128,8 +128,8 @@ int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
   int a = img->width / 2;
   int b = img->height / 2;
 
-  int x = a - row;
-  int y = b - col;
+  int x = a - col;
+  int y = b - row;
 
   return (((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b))) <= 10000);
 }
