@@ -118,6 +118,17 @@ int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
   return 1;
 }
 
+
+//returns whether or not the pixel at a given row or column is within the ellipse
+intl is_in_ellipse (struct Image *img, int32_t row, int32_t col){
+  int a = img->width / 2;
+  int b = img->height / 2;
+
+  int x = a - row;
+  int y = b - col;
+
+  return ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
+}
 //! Transform the input image by copying only those pixels that are
 //! within an ellipse centered within the bounds of the image.
 //! Pixels not in the ellipse should be left unmodified, which will
@@ -139,6 +150,19 @@ int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
 //!                   transformed pixels should be stored)
 void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
   // TODO: implement
+
+  for (int row = 0; row < output_img->height; row++) {
+    for (int col = 0; col < output_img->width; col++) {
+      int index = compute_index(input_img, row, col);
+      if (is_in_ellipse(input_img, row, col)){
+	output_img->data[index] = input_img->data[index];
+      }
+      else {
+	output_img->data[index] = 65536; //sets pixels outside of the ellipse to max value, which should be fully black
+      }
+    } 
+  }
+  return;
 }
 
 //! Transform the input image using an "emboss" effect. The pixels
