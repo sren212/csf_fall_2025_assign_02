@@ -415,6 +415,22 @@ void test_ellipse_basic( TestObjs *objs ) {
   destroy_img( smiley_ellipse_expected );
 }
 
+void test_is_in_ellipse (TestObjs *objs){
+  int a = objs->smiley->width / 2;
+  int b = objs->smiley->height / 2;
+
+  for (int col = 0; col < smiley->width; col++){
+    for (int row = 0; row < smiley->height; row++){
+      int x = a - row;
+      int y = b - col;
+      
+  ASSERT ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
+    }
+  }
+
+}
+  
+
 void test_emboss_basic( TestObjs *objs ) {
   struct Picture smiley_emboss_expected_pic = {
     {
