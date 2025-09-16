@@ -419,8 +419,8 @@ void test_is_in_ellipse (TestObjs *objs){
   int a = objs->smiley->width / 2;
   int b = objs->smiley->height / 2;
 
-  for (int col = 0; col < smiley->width; col++){
-    for (int row = 0; row < smiley->height; row++){
+  for (int col = 0; col < objs->smiley->width; col++){
+    for (int row = 0; row < objs->smiley->height; row++){
       int x = a - row;
       int y = b - col;
       
