@@ -120,11 +120,7 @@ int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
 
 
 //returns whether or not the pixel at a given row or column is within the ellipse
-// @param img the image in which the pixel lies
-// @param row the row at which the pixel is located
-// @param col the column at which the pixel is located
-// @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
-int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
+intl is_in_ellipse (struct Image *img, int32_t row, int32_t col){
   int a = img->width / 2;
   int b = img->height / 2;
 
@@ -162,7 +158,7 @@ void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
 	output_img->data[index] = input_img->data[index];
       }
       else {
-	output_img->data[index] = make_pixel(255, 255, 255, 255); //sets pixels outside of the ellipse to fully black
+	output_img->data[index] = 65536; //sets pixels outside of the ellipse to max value, which should be fully black
       }
     } 
   }
