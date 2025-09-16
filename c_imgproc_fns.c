@@ -119,11 +119,11 @@ int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
 }
 
 
-//returns whether or not the pixel at a given row or column is within the ellipse
-// @param img the image in which the pixel lies
-// @param row the row at which the pixel is located
-// @param col the column at which the pixel is located
-// @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
+//! returns whether or not the pixel at a given row or column is within the ellipse
+//!  @param img the image in which the pixel lies
+//! @param row the row at which the pixel is located
+//! @param col the column at which the pixel is located
+//! @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
 int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
   int a = img->width / 2;
   int b = img->height / 2;
@@ -131,7 +131,7 @@ int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
   int x = a - row;
   int y = b - col;
 
-  return ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
+  return (((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b))) <= 10000);
 }
 //! Transform the input image by copying only those pixels that are
 //! within an ellipse centered within the bounds of the image.
@@ -153,7 +153,7 @@ int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
 //! @param output_img pointer to the output Image (in which the
 //!                   transformed pixels should be stored)
 void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
-  // TODO: implement
+  
 
   for (int row = 0; row < output_img->height; row++) {
     for (int col = 0; col < output_img->width; col++) {
