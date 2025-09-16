@@ -1,3 +1,10 @@
-TODO: names of team members
+Suwen Ren
+- get_r(), get_g(), get_b(), and get_a()
+- make_pixel()
+- imgproc_transpose()
+- imgproc_emboss()
 
-TODO: contributions of each team member
+Anton Sackley
+- is_in_ellipse()
+- imgproc_complement()
+- imgproc_ellipse()
