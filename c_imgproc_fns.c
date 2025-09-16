@@ -159,10 +159,10 @@ void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
     for (int col = 0; col < output_img->width; col++) {
       int index = compute_index(input_img, row, col);
       if (is_in_ellipse(input_img, row, col)){
-	output_img->data[index] = input_img->data[index];
+	      output_img->data[index] = input_img->data[index];
       }
       else {
-	output_img->data[index] = make_pixel(255, 255, 255, 0); //sets pixels outside of the ellipse to fully black
+	      output_img->data[index] = make_pixel(0, 0, 0, 255); //sets pixels outside of the ellipse to fully black
 
       }
     } 
