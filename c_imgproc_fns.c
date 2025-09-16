@@ -240,7 +240,8 @@ void imgproc_emboss( struct Image *input_img, struct Image *output_img ) {
       } else if (abs(diffB) > abs(diff)) {
         diff = diffB;
       }
-
+      
+      // apply embossed effect
       int val = diff + 128;
       if (val > 255) {
         val = 255;
