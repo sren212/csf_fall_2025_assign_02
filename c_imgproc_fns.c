@@ -211,9 +211,10 @@ void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
 void imgproc_emboss( struct Image *input_img, struct Image *output_img ) {
   // Set top row rgb values to 128
   for (int col = 0; col < input_img->width; col++) {
-    uint32_t a = get_a(input_img->data[col]);
+    int index = compute_index(output_img, 0, col);
+    uint32_t a = get_a(input_img->data[index]);
     uint32_t pixel = make_pixel(128, 128, 128, a);
-    output_img->data[col] = pixel;
+    output_img->data[index] = pixel;
   }
 
   // Set left column rgb values to 128
@@ -246,7 +247,8 @@ void imgproc_emboss( struct Image *input_img, struct Image *output_img ) {
       int diff = diffR;
       if (abs(diffG) > abs(diff)) {
         diff = diffG;
-      } else if (abs(diffB) > abs(diff)) {
+      } 
+      if (abs(diffB) > abs(diff)) {
         diff = diffB;
       }
       
