@@ -49,6 +49,14 @@ uint32_t make_pixel( uint32_t r, uint32_t g, uint32_t b, uint32_t a );
 //! @return 1D location of the pixel
 uint32_t compute_index( struct Image *img, int32_t row, int32_t col );
 
+//! Return whether or not the pixel at a given row or column is within the ellipse
+//!
+//! @param img the image in which the pixel lies
+//! @param row the row at which the pixel is located
+//! @param col the column at which the pixel is located
+//! @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
+int is_in_ellipse( struct Image *img, int32_t row, int32_t col);
+
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
 //! in the color component information should be inverted
@@ -75,14 +83,6 @@ void imgproc_complement( struct Image *input_img, struct Image *output_img );
 //!         transformation can't be applied because the image
 //!         width and height are not the same
 int imgproc_transpose( struct Image *input_img, struct Image *output_img );
-
-
-//returns whether or not the pixel at a given row or column is within the ellipse
-// @param img the image in which the pixel lies
-// @param row the row at which the pixel is located
-// @param col the column at which the pixel is located
-// @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
-int is_in_ellipse( struct Image *img, int32_t row, int32_t col);
 
 //! Transform the input image by copying only those pixels that are
 //! within an ellipse centered within the bounds of the image.

@@ -4,8 +4,6 @@
 #include <assert.h>
 #include "imgproc.h"
 
-// TODO: define your helper functions here
-
 //! Given a pixel, extract its 8-bit red component (bits 24-31).
 //!
 //! @param pixel 32 bits representing a RGBA pixel
@@ -73,6 +71,22 @@ uint32_t compute_index( struct Image *img, int32_t row, int32_t col ) {
   return row*(img->width) + col;
 }
 
+//! Return whether or not the pixel at a given row or column is within the ellipse
+//!
+//! @param img the image in which the pixel lies
+//! @param row the row at which the pixel is located
+//! @param col the column at which the pixel is located
+//! @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
+int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
+  int a = img->width / 2;
+  int b = img->height / 2;
+
+  int x = a - col;
+  int y = b - row;
+
+  return (((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b))) <= 10000);
+}
+
 //! Transform the color component values in each input pixel
 //! by applying the bitwise complement operation. I.e., each bit
 //! in the color component information should be inverted
@@ -129,21 +143,6 @@ int imgproc_transpose( struct Image *input_img, struct Image *output_img ) {
   return 1;
 }
 
-
-//! returns whether or not the pixel at a given row or column is within the ellipse
-//! @param img the image in which the pixel lies
-//! @param row the row at which the pixel is located
-//! @param col the column at which the pixel is located
-//! @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
-int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
-  int a = img->width / 2;
-  int b = img->height / 2;
-
-  int x = a - col;
-  int y = b - row;
-
-  return (((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b))) <= 10000);
-}
 //! Transform the input image by copying only those pixels that are
 //! within an ellipse centered within the bounds of the image.
 //! Pixels not in the ellipse should be left unmodified, which will
@@ -164,8 +163,6 @@ int is_in_ellipse (struct Image *img, int32_t row, int32_t col){
 //! @param output_img pointer to the output Image (in which the
 //!                   transformed pixels should be stored)
 void imgproc_ellipse( struct Image *input_img, struct Image *output_img ) {
-  
-
   for (int row = 0; row < output_img->height; row++) {
     for (int col = 0; col < output_img->width; col++) {
       int index = compute_index(input_img, row, col);
