@@ -83,7 +83,18 @@ uint32_t compute_index( struct Image *img, int32_t row, int32_t col ) {
 //! @param output_img pointer to the output Image (in which the
 //!                   transformed pixels should be stored)
 void imgproc_complement( struct Image *input_img, struct Image *output_img ) {
-  // TODO: implement
+  for (int row = 0; row < output_img->height; row++) {
+    for (int col = 0; col < output_img->width; col++) {
+      int index = compute_index(input_img, row, col);
+      output_img->data[index] = input_img->data[index]; //copies over all values
+      int stored_alpha = get_a(output_img->data[index]); //stores alpha for use later
+      output_img->data[index]  = ~(output_img->data[index]); //negates all characters, including alpha
+      int32_t negator = 255; //binary representation is 24 0's followed by 8 1's
+      negator = ~negator; //inverts bits of negator, to allow for bitwise &'ing
+      output_img->data[index] = output_img->data[index] & negator; //turns alpha into zero while preserving rest of characters
+      output_img->data[index] += stored_alpha; //re-adds original alpha value
+    }
+  }
 }
 
 //! Transform the input image by swapping the row and column
