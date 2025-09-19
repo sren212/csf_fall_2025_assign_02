@@ -19,6 +19,42 @@
  * Definitions of image transformation functions
  */
 
+//! Given a pixel, extract its 8-bit red component (bits 24-31).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the red value of the pixel, 0-255 
+	.globl get_r
+get_r:
+
+	ret
+
+//! Given a pixel, extract its 8-bit green component (bits 16-23).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the green value of the pixel, 0-255 
+	.globl get_g
+get_g:
+
+	ret
+
+//! Given a pixel, extract its 8-bit blue component (bits 8-15).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the blue value of the pixel, 0-255 
+	.globl get_b
+get_b:
+
+	ret
+
+//! Given a pixel, extract its 8-bit alpha component (bits 0-7).
+//!
+//! @param pixel 32 bits representing a RGBA pixel
+//! @return the alpha value of the pixel, 0-255 
+	.globl get_a
+get_a:
+
+	ret
+
 /*
  *  Transform the color component values in each input pixel
  *  by applying the bitwise complement operation. I.e., each bit
