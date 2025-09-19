@@ -140,11 +140,48 @@ imgproc_transpose:
 */
 	.globl is_in_ellipse					
 imgproc_is_in_ellipse:
-	movq %r10 (rdi + IMAGE_WIDTH_OFFSET) //takes in width as temp variable
-	movq %r11 (rdi + IMAGE_HEIGHT_OFFSET) //takes in height as temp variable
+	movq %r10 (rdi + IMAGE_WIDTH_OFFSET) //takes in width as temp variable (a)
+	movq %r11 (rdi + IMAGE_HEIGHT_OFFSET) //takes in height as temp variable (b)
 	lsr %r10 // dives value in r10 by 2, in accordance with ellipse formula
-	lsr $r11 // same as above
+	lsr %r11 // same as above
 
+	
+	sub %rdx, %r10 //subtracts the column from a, creates (x)
+	sub %rsi, %r11 //same as above, creates (y)
+
+	movq %r10, %r12 //copies x to r12 to begin mathematical calculations
+	movq %r11, %r13 //copies y to r13 to begin mathematical calculations
+
+	Imul %r12, %r12 //computes x^2
+	Imul %r13, %r13 //computes y^2
+	Imul $10000, %r12 //multiplies by 10000
+	Imul $10000, %r13 //multiplies by 10000
+
+	Imul %r10, %r10 //computes a^2
+	Imul %r11, %r11 //computes b^2
+
+	movq %r12, %AX //puts dividend in AX to prepare for division
+	div %r10 //divides 10,000x^2 by a^2
+	movq %AX, %r12 //puts divided value back into r12
+
+	movq %r13, %AX //puts dividend in AX to prepare for division
+	div %r11 //divides 10,000y^2 by b^2
+	movq %AX, %r13 //puts divided value back into r13
+
+	add %r12, %r13 //adds together the two parts of the equation
+	cmp %r13, $10000 //compares equation with 10000
+	jle .Ltrue //control flow based on above comparison
+	jmp lFalse
+
+	.Lfalse: //puts false value in return register
+	movq $0, %rax
+	jmp Lepilogue
+
+	.Ltrue: //puts true value in return register
+	movq $1, %rax
+	jmp Lepilogue
+
+	.Lepilogue:
 	ret
 
 
