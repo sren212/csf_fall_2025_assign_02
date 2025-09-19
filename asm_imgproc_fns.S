@@ -94,6 +94,41 @@ imgproc_transpose:
 	/* TODO: implement */
 	ret
 
+
+
+
+	
+/* Return whether or not the pixel at a given row or column is within the ellipse
+*
+* Parameters:
+* %rdi - pointer to the input Image
+* %rsi - row at which the pixel is located	
+* %rdx - col the column at which the pixel is located
+*	
+* @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
+*/
+	.globl is_in_ellipse					
+imgproc_is_in_ellipse:
+	movq %r10 (rdi + IMAGE_WIDTH_OFFSET) //takes in width as temp variable
+	movq %r11 (rdi + IMAGE_HEIGHT_OFFSET) //takes in height as temp variable
+	lsr %r10 // dives value in r10 by 2, in accordance with ellipse formula
+	lsr $r11 // same as above
+
+	ret
+
+
+/* Compute the 1D index of a pixel given an image, row, and column.
+*
+* Paremeters:
+* @rdi - pointer to the input Image
+* %rsi - the row location of the pixel
+* %rdx - the column location of the pixel
+*	
+* @return 1D location of the pixel
+*/
+	.globl	commpute_index
+compute_index:	
+
 /*
  *  Transform the input image by copying only those pixels that are
  *  within an ellipse centered within the bounds of the image.
