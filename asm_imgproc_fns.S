@@ -20,30 +20,32 @@
  */
 
 /*
- * Given a pixel, extract its 8-bit red component (bits 24-31).
+ * Given a 32-bit pixel, extract its 8-bit red component (bits 24-31).
  *
  * Parameter
- * %rdi - pixel value
+ * %rdi - 32-bit pixel value
  * 
- * @return the red value of pixel (24-31)
+ * @return the 32-bit red value of pixel (24-31)
  */
 	.globl get_r
 get_r:
 	/* Register use:
-	 * %rdi is the pixel value
+	 * %rdi is the 64-bit pixel value
+	 * %edi is the lower 32 bits of %rdi
 	 * %rax is the return value (the red component of pixel)
+	 * %eax is the lower 32 bits of %rax
 	 */
 	/* prologue */
 	pushq %rdi
 
-	/* zero the non-red component of %rdi */
-	andq $0xFF000000, %rdi
+	/* zero the non-red component of %edi */
+	andl $0xFF000000, %edi
 
-	/* extract the red component of %rdi */
-	shr $24, %rdi
+	/* extract the red component of %edi */
+	shr $24, %edi
 
 	/* epilogue */
-	movq %rdi, %rax
+	movl %edi, %eax
 	popq %rdi
 	ret
 
@@ -57,7 +59,24 @@ get_r:
  */
 	.globl get_g
 get_g:
+	/* Register use:
+	 * %rdi is the 64-bit pixel value
+	 * %edi is the lower 32 bits of %rdi
+	 * %rax is the return value (the green component of pixel)
+	 * %eax is the lower 32 bits of %rax
+	 */
+	/* prologue */
+	pushq %rdi
 
+	/* zero the non-green component of %edi */
+	andl $0x00FF0000, %edi
+
+	/* extract the green component of %edi */
+	shr $16, %edi
+
+	/* epilogue */
+	movl %edi, %eax
+	popq %rdi
 	ret
 
 /*
@@ -70,7 +89,24 @@ get_g:
  */
 	.globl get_b
 get_b:
+	/* Register use:
+	 * %rdi is the 64-bit pixel value
+	 * %edi is the lower 32 bits of %rdi
+	 * %rax is the return value (the blue component of pixel)
+	 * %eax is the lower 32 bits of %rax
+	 */
+	/* prologue */
+	pushq %rdi
 
+	/* zero the non-blue component of %edi */
+	andl $0x0000FF00, %edi
+
+	/* extract the blue component of %edi */
+	shr $8, %edi
+
+	/* epilogue */
+	movl %edi, %eax
+	popq %rdi
 	ret
 
 /*
@@ -83,6 +119,38 @@ get_b:
  */
 	.globl get_a
 get_a:
+	/* Register use:
+	 * %rdi is the 64-bit pixel value
+	 * %edi is the lower 32 bits of %rdi
+	 * %rax is the return value (the alpha component of pixel)
+	 * %eax is the lower 32 bits of %rax
+	 */
+	/* prologue */
+	pushq %rdi
+
+	/* zero the non-alpha component of %edi */
+	andl $0x000000FF, %edi
+
+	/* epilogue */
+	movl %edi, %eax
+	popq %rdi
+	ret
+
+/*
+ * Given red, green, blue, and alpha values, construct a 32-bit
+ * pixel with r being in bits 24-31, b in bits 16-23, g in bits
+ * 8-15, and a in bits 0-7.
+ *
+ * Parameter
+ * %rdi - 32-bit number 0-255 representing the red component
+ * %rsi - 32-bit number 0-255 representing the green component
+ * %rdx - 32-bit number 0-255 representing the blue component
+ * %rcx - 32-bit number 0-255 representing the alpha component
+ * 
+ * @return the complete pixel
+ */
+	.globl make_pixel
+make_pixel:
 
 	ret
 
@@ -194,8 +262,9 @@ imgproc_is_in_ellipse:
 *	
 * @return 1D location of the pixel
 */
-	.globl	commpute_index
+	.globl	compute_index
 compute_index:	
+	ret
 
 /*
  *  Transform the input image by copying only those pixels that are
