@@ -19,37 +19,68 @@
  * Definitions of image transformation functions
  */
 
-//! Given a pixel, extract its 8-bit red component (bits 24-31).
-//!
-//! @param pixel 32 bits representing a RGBA pixel
-//! @return the red value of the pixel, 0-255 
+/*
+ * Given a pixel, extract its 8-bit red component (bits 24-31).
+ *
+ * Parameter
+ * %rdi - pixel value
+ * 
+ * @return the red value of pixel (24-31)
+ */
 	.globl get_r
 get_r:
+	/* Register use:
+	 * %rdi is the pixel value
+	 * %rax is the return value (the red component of pixel)
+	 */
+	/* prologue */
+	pushq %rdi
 
+	/* zero the non-red component of %rdi */
+	andq $0xFF000000, %rdi
+
+	/* extract the red component of %rdi */
+	shr $24, %rdi
+
+	/* epilogue */
+	movq %rdi, %rax
+	popq %rdi
 	ret
 
-//! Given a pixel, extract its 8-bit green component (bits 16-23).
-//!
-//! @param pixel 32 bits representing a RGBA pixel
-//! @return the green value of the pixel, 0-255 
+/*
+ * Given a pixel, extract its 8-bit green component (bits 16-23).
+ *
+ * Parameter
+ * %rdi - pixel value
+ * 
+ * @return the green value of pixel (16-23)
+ */
 	.globl get_g
 get_g:
 
 	ret
 
-//! Given a pixel, extract its 8-bit blue component (bits 8-15).
-//!
-//! @param pixel 32 bits representing a RGBA pixel
-//! @return the blue value of the pixel, 0-255 
+/*
+ * Given a pixel, extract its 8-bit blue component (bits 8-15).
+ *
+ * Parameter
+ * %rdi - pixel value
+ * 
+ * @return the blue value of pixel (8-15)
+ */
 	.globl get_b
 get_b:
 
 	ret
 
-//! Given a pixel, extract its 8-bit alpha component (bits 0-7).
-//!
-//! @param pixel 32 bits representing a RGBA pixel
-//! @return the alpha value of the pixel, 0-255 
+/*
+ * Given a pixel, extract its 8-bit alpha component (bits 0-7).
+ *
+ * Parameter
+ * %rdi - pixel value
+ *
+ * @return the alpha value of pixel (0-7)
+ */
 	.globl get_a
 get_a:
 
