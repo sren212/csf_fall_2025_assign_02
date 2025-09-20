@@ -423,8 +423,8 @@ void test_is_in_ellipse (TestObjs *objs){
 
   for (int col = 0; col < objs->smiley->width; col++){
     for (int row = 0; row < objs->smiley->height; row++){
-      int x = a - row;
-      int y = b - col;
+      int x = a - col;
+      int y = b - row;
       
   ASSERT ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
     }
