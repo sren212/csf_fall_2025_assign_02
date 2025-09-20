@@ -151,7 +151,38 @@ get_a:
  */
 	.globl make_pixel
 make_pixel:
+	/* Register use:
+	 * %rax is the return value (the complete pixel)
+	 * %eax is the lower 32 bits of %rax
+	 */
 
+	/* prologue */
+	pushq %rdi
+	pushq %rsi
+	pushq %rdx
+	pushq %rcx
+	movq $0, %rax
+
+	/* add the red component */
+	shl $24, %edi
+	addl %edi, %eax
+
+	/* add the green component */
+	shl $16, %esi
+	addl %esi, %eax
+
+	/* add the blue component */
+	shl $8, %edx
+	addl %edx, %eax
+
+	/* add the alpha component */
+	addl %ecx, %eax
+
+	/* epilogue */
+	popq %rdi
+	popq %rsi
+	popq %rdx
+	popq %rcx
 	ret
 
 /*
@@ -212,7 +243,6 @@ imgproc_is_in_ellipse:
 	movq %r11 (rdi + IMAGE_HEIGHT_OFFSET) //takes in height as temp variable
 	lsr %r10 // dives value in r10 by 2, in accordance with ellipse formula
 	lsr $r11 // same as above
-
 	ret
 
 
