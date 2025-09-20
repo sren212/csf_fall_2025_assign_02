@@ -97,6 +97,7 @@ void test_make_pixel( TestObjs *objs );
 void test_compute_index( TestObjs *objs );
 void test_complement_basic( TestObjs *objs );
 void test_transpose_basic( TestObjs *objs );
+void test_is_in_ellipse ( TestObjs *obs );
 void test_ellipse_basic( TestObjs *objs );
 void test_emboss_basic( TestObjs *objs );
 // TODO: add prototypes for additional test functions
