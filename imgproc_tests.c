@@ -95,9 +95,9 @@ void test_get_b( TestObjs *objs );
 void test_get_a( TestObjs *objs );
 void test_make_pixel( TestObjs *objs );
 void test_compute_index( TestObjs *objs );
+void test_is_in_ellipse ( TestObjs *obs );
 void test_complement_basic( TestObjs *objs );
 void test_transpose_basic( TestObjs *objs );
-void test_is_in_ellipse ( TestObjs *obs );
 void test_ellipse_basic( TestObjs *objs );
 void test_emboss_basic( TestObjs *objs );
 // TODO: add prototypes for additional test functions
@@ -119,9 +119,9 @@ int main( int argc, char **argv ) {
   TEST( test_get_a );
   TEST( test_make_pixel );
   TEST( test_compute_index );
+  TEST( test_is_in_ellipse) ;
   TEST( test_complement_basic );
   TEST( test_transpose_basic );
-  TEST( test_is_in_ellipse) ;
   TEST( test_ellipse_basic );
   TEST( test_emboss_basic );
 
@@ -309,6 +309,21 @@ void test_compute_index( TestObjs *objs ) {
   }
 }
 
+void test_is_in_ellipse (TestObjs *objs){
+  int a = objs->smiley->width / 2;
+  int b = objs->smiley->height / 2;
+
+  for (int col = 0; col < objs->smiley->width; col++){
+    for (int row = 0; row < objs->smiley->height; row++){
+      int x = a - row;
+      int y = b - col;
+      
+      ASSERT ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
+    }
+  }
+
+}
+
 void test_complement_basic( TestObjs *objs ) {
   {
     imgproc_complement( objs->smiley, objs->smiley_out );
@@ -415,23 +430,7 @@ void test_ellipse_basic( TestObjs *objs ) {
   ASSERT( images_equal( objs->smiley_out, smiley_ellipse_expected ) );
 
   destroy_img( smiley_ellipse_expected );
-}
-
-void test_is_in_ellipse (TestObjs *objs){
-  int a = objs->smiley->width / 2;
-  int b = objs->smiley->height / 2;
-
-  for (int col = 0; col < objs->smiley->width; col++){
-    for (int row = 0; row < objs->smiley->height; row++){
-      int x = a - row;
-      int y = b - col;
-      
-  ASSERT ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
-    }
-  }
-
-}
-  
+} 
 
 void test_emboss_basic( TestObjs *objs ) {
   struct Picture smiley_emboss_expected_pic = {
