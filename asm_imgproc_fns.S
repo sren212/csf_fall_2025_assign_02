@@ -274,7 +274,31 @@ imgproc_transpose:
 		add $1, %esi
 
 		/* TODO: store the indicies for input and output into %r8 and %r9 respectively */
+		/* Save values in stack before calling compute_index */
+		pushq %rdi
+		pushq %rsi
+		pushq %rdx
+		pushq %rax
 		
+		/* call compute_index(input_img, row, col) for input[row][col] */
+		movq %edi, %rsi
+		movq %esi, %rdx
+		call compute_index
+		movq %rax, %r8
+
+		/* call compute_index(input_img, row, col) for input[row][col] */
+		movq %rsi, %rdi
+		movq %esi, %rsi
+		movq %edi, %rdx
+		call compute_index
+		movq %rax, %r8
+
+		/* Restore values after calling compute_index */
+		popq %rax
+		popq %rdx
+		popq %rsi
+		popq %rdi
+
 		/* Get the pixel value in input[row][col] */
 		movl (IMAGE_DATA_OFFSET(%rdi, %r8, 4)), %esp
 
