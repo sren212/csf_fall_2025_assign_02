@@ -221,12 +221,69 @@ imgproc_complement:
  */
 	.globl imgproc_transpose
 imgproc_transpose:
-	/* TODO: implement */
+	/* Register use: 
+	* %rdi is the pointer to the input image
+	* %rsi is the pointer to the output image
+	* %ecx is height of input image
+	* %edx is width of input image
+	* %edi is the current row
+	* %esi is the current column
+	* %esp is the pixel value to be copied from input -> output
+	* %r8 is the 1D index for input[row][col]
+	* %r9 is the 1D index for output[col][row]
+	* %rax is the return value
+	*/
+
+	/* move height and width into %ecx and %edx */
+	movl IMAGE_WIDTH_OFFSET(%rdi), %ecx
+	movl IMAGE_HEIGHT_OFFSET(%rsi), %edx
+
+	/* set default return value */
+	movl $0, %rax
+
+	/* Check that height == width and jump to epilogue if they aren't.*/
+	cmp %eax, %ecx
+	jne .Lepilogue
+
+	/* Now that we are sure that height == width, set return value to 1 */
+	movl $1, %rax
+
+	/* Pre-loop, set row and col to -1 */
+	movl $-1, %edi
+	movl $-1, %esi
+
+	/* Outer loop: loop thru rows*/
+	.LouterLoop:
+		/* check if we're at the end (row == height) */
+		cmp %edi, %edx
+		je .Lepilogue
+
+		/* add 1 to row */
+		add $1, %edi
+
+		/* go to inner loop */
+		jmp .LinnerLoop
+
+	/* Inner loop: loop thru cols and set output[row][col] to input[col][row] */
+	.LinnerLoop:
+		/* Check if this row is finished, (col == width) and go back to .Louterloop if so. */
+		cmp %esi, %edx
+		je .LouterLoop
+
+		/* Add 1 to col */
+		add $1, %esi
+
+		/* TODO: store the indicies for input and output into %r8 and %r9 respectively */
+		
+		/* Get the pixel value in input[row][col] */
+		movl (IMAGE_DATA_OFFSET(%rdi, %r8, 4)), %esp
+
+		/* Set output[col][row] to the pixel value */
+		movl (%esp), IMAGE_DATA_OFFSET(%rdx, %r9, 4)
+
+	/* Epilogue */
+	.Lepilogue:
 	ret
-
-
-
-
 	
 /* Return whether or not the pixel at a given row or column is within the ellipse
 *
@@ -238,7 +295,7 @@ imgproc_transpose:
 * @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
 */
 	.globl is_in_ellipse					
-imgproc_is_in_ellipse:
+is_in_ellipse:
 
 	movq %r10, %rdi  //takes in width as temp variable (a)
 	add IMAGE_HEIGHT_OFFSET, %rdi //offsets rdi to access height

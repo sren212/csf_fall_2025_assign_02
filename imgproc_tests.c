@@ -303,7 +303,7 @@ void test_compute_index( TestObjs *objs ) {
   int counter = 0;
   for (int row = 0; row < objs->smiley->height; row++) {
     for (int col = 0; col < objs->smiley->width; col++) {
-      ASSERT( counter == compute_index(objs->smiley, row, col));
+      ASSERT( counter == compute_index(objs->smiley, row, col) );
       counter++;
     }
   }
@@ -317,7 +317,7 @@ void test_is_in_ellipse (TestObjs *objs){
     for (int row = 0; row < objs->smiley->height; row++){
       int x = a - col;
       int y = b - row;
-      ASSERT ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000);
+      ASSERT( ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000) == is_in_ellipse(objs->smiley, row, col) );
     }
   }
 }
