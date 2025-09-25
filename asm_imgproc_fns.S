@@ -262,7 +262,7 @@ imgproc_transpose:
 
 		/* check if we're at the end (row == height) */
 		cmp %r10d, %edx
-		je .Lepilogue
+		je .LepilogueTranspose
 
 		/* go to inner loop */
 		jmp .LinnerLoopTranspose
