@@ -318,7 +318,7 @@ imgproc_transpose:
 *	
 * @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
 */
-	.globl is_in_ellipse					
+/*	.globl is_in_ellipse					
 is_in_ellipse:
 
 	movq %r10, %rdi  //takes in width as temp variable (a)
@@ -366,7 +366,8 @@ is_in_ellipse:
 	.Lepilogue:
 	ret
 
-
+	*/
+	
 /* Compute the 1D index of a pixel given an image, row, and column.
 *
 * Paremeters:
@@ -377,7 +378,12 @@ is_in_ellipse:
 * @return 1D location of the pixel
 */
 	.globl	compute_index
-compute_index:	
+compute_index:
+	movq %rsi, %r10 //puts row into r10
+	movq IMAGE_WIDTH_OFFSET(%rdi), %r11 //puts image width into r11
+	Imul %r11, %r10 //multiplies row by width, in accordance with formula
+	add %rdx, %r10 //adds column value to previous produce
+	movq %r10, rax //puts final product into return address
 	ret
 
 /*
