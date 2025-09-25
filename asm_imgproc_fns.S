@@ -256,12 +256,12 @@ imgproc_transpose:
 
 	/* Outer loop: loop thru rows*/
 	.LouterLoop:
+		/* add 1 to row */
+		add $1, %r10
+
 		/* check if we're at the end (row == height) */
 		cmp %r10, %edx
 		je .Lepilogue
-
-		/* add 1 to row */
-		add $1, %r10
 
 		/* go to inner loop */
 		jmp .LinnerLoop
@@ -286,7 +286,7 @@ imgproc_transpose:
 		movq %r11, %rdx
 		call compute_index
 		movq %rax, %r8
-
+		
 		/* call compute_index(input_img, row, col) for input[row][col] */
 		movq %rsi, %rdi
 		movq %r11, %rsi
@@ -302,7 +302,7 @@ imgproc_transpose:
 
 		/* Get the pixel value in input[row][col] */
 		movl IMAGE_DATA_OFFSET(%rdi, %r8, 4), %r12
-
+	
 		/* Set output[col][row] to the pixel value */
 		movl %r12, IMAGE_DATA_OFFSET(%rdx, %r9, 4)
 
