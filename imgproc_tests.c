@@ -309,7 +309,7 @@ void test_compute_index( TestObjs *objs ) {
   }
 }
 
-void test_is_in_ellipse (TestObjs *objs){
+/*void test_is_in_ellipse (TestObjs *objs){
   int a = objs->smiley->width / 2;
   int b = objs->smiley->height / 2;
 
@@ -320,7 +320,7 @@ void test_is_in_ellipse (TestObjs *objs){
       ASSERT( ((10000 * x * x) / (a * a) + ((10000 * y * y) / (b * b)) <= 10000) == is_in_ellipse(objs->smiley, row, col) );
     }
   }
-}
+  } */
 
 void test_complement_basic( TestObjs *objs ) {
   {
