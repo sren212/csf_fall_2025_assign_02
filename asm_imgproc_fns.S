@@ -200,6 +200,7 @@ make_pixel:
 	.globl imgproc_complement
 imgproc_complement:
 	/* TODO: implement */
+	
 	ret
 
 /*
@@ -454,5 +455,5 @@ imgproc_emboss:
 	ret
 
 /*
-vim:ft=gas:
+.vim:ft=gas:
 */
