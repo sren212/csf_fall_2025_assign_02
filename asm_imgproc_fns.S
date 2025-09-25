@@ -241,39 +241,39 @@ imgproc_transpose:
 	movl IMAGE_HEIGHT_OFFSET(%rdi), %edx
 
 	/* set default return value */
-	movl $0, %rax
+	mov $0, %rax
 
 	/* Check that height == width and jump to epilogue if they aren't.*/
 	cmp %edx, %ecx
-	jne .Lepilogue
+	jne .LepilogueTranspose
 
 	/* Now that we are sure that height == width, set return value to 1 */
-	movl $1, %rax
+	mov $1, %rax
 
 	/* Pre-loop, set row and col to -1 */
-	movl $-1, %r10
-	movl $-1, %r11
+	mov $-1, %r10
+	mov $-1, %r11
 
 	/* Outer loop: loop thru rows*/
-	.LouterLoop:
+	.LouterLoopTranspose:
 		/* add 1 to row */
 		add $1, %r10
 
 		/* check if we're at the end (row == height) */
-		cmp %r10, %edx
+		cmp %r10d, %edx
 		je .Lepilogue
 
 		/* go to inner loop */
-		jmp .LinnerLoop
+		jmp .LinnerLoopTranspose
 
 	/* Inner loop: loop thru cols and set output[row][col] to input[col][row] */
-	.LinnerLoop:
+	.LinnerLoopTranspose:
 		/* Add 1 to col */
 		add $1, %r11
 
 		/* Check if this row is finished (col == width) and go back to .Louterloop if so. */
-		cmp %r11, %ecx
-		je .LouterLoop
+		cmp %r11d, %ecx
+		je .LouterLoopTranspose
 
 		/* Save values in stack before calling compute_index */
 		pushq %rdi
@@ -301,13 +301,15 @@ imgproc_transpose:
 		popq %rdi
 
 		/* Get the pixel value in input[row][col] */
-		movl IMAGE_DATA_OFFSET(%rdi, %r8, 4), %r12
+		mov IMAGE_DATA_OFFSET(%rdi, %r8, 4), %r12
 	
 		/* Set output[col][row] to the pixel value */
-		movl %r12, IMAGE_DATA_OFFSET(%rdx, %r9, 4)
+		mov %r12, IMAGE_DATA_OFFSET(%rdx, %r9, 4)
+
+		jmp .LinnerLoopTranspose
 
 	/* Epilogue */
-	.Lepilogue:
+	.LepilogueTranspose:
 		popq %r12
 	ret
 	
