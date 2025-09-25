@@ -251,14 +251,16 @@ imgproc_transpose:
 	/* Now that we are sure that height == width, set return value to 1 */
 	mov $1, %rax
 
-	/* Pre-loop, set row and col to -1 */
+	/* Pre-loop, set row to -1 */
 	mov $-1, %r10
-	mov $-1, %r11
 
 	/* Outer loop: loop thru rows*/
 	.LouterLoopTranspose:
 		/* add 1 to row */
 		add $1, %r10
+
+		/* set col to -1 */
+		mov $-1, %r11
 
 		/* check if we're at the end (row == height) */
 		cmp %r10d, %edx
@@ -277,35 +279,58 @@ imgproc_transpose:
 		je .LouterLoopTranspose
 
 		/* Save values in stack before calling compute_index */
+		pushq %rcx
 		pushq %rdi
-		pushq %rsi
 		pushq %rdx
 		pushq %rax
+		pushq %rsi
+		pushq %r10
+		pushq %r11
 		
 		/* call compute_index(input_img, row, col) for input[row][col] */
 		movq %r10, %rsi
 		movq %r11, %rdx
 		call compute_index
 		movq %rax, %r8
+
+		/* extract original register values from stack */
+		popq %r11
+		popq %r10
+		popq %rsi
+		pushq %rsi
+		pushq %r10
+		pushq %r11
 		
 		/* call compute_index(input_img, row, col) for input[row][col] */
-		movq %rsi, %rdi
-		movq %r11, %rsi
-		movq %r10, %rdx
+		mov %rsi, %rdi
+		mov %r11, %rsi
+		mov %r10, %rdx
 		call compute_index
-		movq %rax, %r9
+		mov %rax, %r9
 
 		/* Restore values after calling compute_index */
+		popq %r11
+		popq %r10
+		popq %rsi
 		popq %rax
 		popq %rdx
-		popq %rsi
 		popq %rdi
+		popq %rcx
+
+		/* temporarily use %rax and %rbx as pointers to input->data and output->data */
+		pushq %rax
+		pushq %rbx
+		movq IMAGE_DATA_OFFSET(%rdi), %rax
+		movq IMAGE_DATA_OFFSET(%rsi), %rbx
 
 		/* Get the pixel value in input[row][col] */
-		mov IMAGE_DATA_OFFSET(%rdi, %r8, 4), %r12
+		movl (%rax, %r8, 4), %r12d
 	
 		/* Set output[col][row] to the pixel value */
-		mov %r12, IMAGE_DATA_OFFSET(%rdx, %r9, 4)
+		movl %r12d, (%rbx, %r9, 4)
+
+		popq %rbx
+		popq %rax
 
 		jmp .LinnerLoopTranspose
 
@@ -376,7 +401,7 @@ is_in_ellipse:
 /* Compute the 1D index of a pixel given an image, row, and column.
 *
 * Paremeters:
-* @rdi - pointer to the input Image
+* %rdi - pointer to the input Image
 * %rsi - the row location of the pixel
 * %rdx - the column location of the pixel
 *	
@@ -385,10 +410,10 @@ is_in_ellipse:
 	.globl	compute_index
 compute_index:
 	movq %rsi, %r10 //puts row into r10
-	movq IMAGE_WIDTH_OFFSET(%rdi), %r11 //puts image width into r11
-	Imul %r11, %r10 //multiplies row by width, in accordance with formula
-	add %rdx, %r10 //adds column value to previous produce
-	movq %r10, %rax //puts final product into return address
+	movl IMAGE_WIDTH_OFFSET(%rdi), %r11d //puts image width into r11
+	imulq %r11, %r10 //multiplies row by width, in accordance with formula
+	addq %rdx, %r10 //adds column value to previous produce
+	mov %r10, %rax //puts final product into return address
 	ret
 
 /*
