@@ -388,7 +388,7 @@ compute_index:
 	movq IMAGE_WIDTH_OFFSET(%rdi), %r11 //puts image width into r11
 	Imul %r11, %r10 //multiplies row by width, in accordance with formula
 	add %rdx, %r10 //adds column value to previous produce
-	movq %r10, rax //puts final product into return address
+	movq %r10, %rax //puts final product into return address
 	ret
 
 /*
