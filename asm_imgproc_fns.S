@@ -226,54 +226,55 @@ imgproc_transpose:
 	* %rsi is the pointer to the output image
 	* %ecx is height of input image
 	* %edx is width of input image
-	* %edi is the current row
-	* %esi is the current column
-	* %esp is the pixel value to be copied from input -> output
+	* %r10 is the current row
+	* %r11 is the current column
+	* %r12 is the pixel value to be copied from input -> output
 	* %r8 is the 1D index for input[row][col]
 	* %r9 is the 1D index for output[col][row]
 	* %rax is the return value
 	*/
 
+	pushq %r12
+
 	/* move height and width into %ecx and %edx */
 	movl IMAGE_WIDTH_OFFSET(%rdi), %ecx
-	movl IMAGE_HEIGHT_OFFSET(%rsi), %edx
+	movl IMAGE_HEIGHT_OFFSET(%rdi), %edx
 
 	/* set default return value */
 	movl $0, %rax
 
 	/* Check that height == width and jump to epilogue if they aren't.*/
-	cmp %eax, %ecx
+	cmp %edx, %ecx
 	jne .Lepilogue
 
 	/* Now that we are sure that height == width, set return value to 1 */
 	movl $1, %rax
 
 	/* Pre-loop, set row and col to -1 */
-	movl $-1, %edi
-	movl $-1, %esi
+	movl $-1, %r10
+	movl $-1, %r11
 
 	/* Outer loop: loop thru rows*/
 	.LouterLoop:
-		/* check if we're at the end (row == height) */
-		cmp %edi, %edx
-		je .Lepilogue
-
 		/* add 1 to row */
-		add $1, %edi
+		add $1, %r10
+
+		/* check if we're at the end (row == height) */
+		cmp %r10, %edx
+		je .Lepilogue
 
 		/* go to inner loop */
 		jmp .LinnerLoop
 
 	/* Inner loop: loop thru cols and set output[row][col] to input[col][row] */
 	.LinnerLoop:
-		/* Check if this row is finished, (col == width) and go back to .Louterloop if so. */
-		cmp %esi, %edx
+		/* Add 1 to col */
+		add $1, %r11
+
+		/* Check if this row is finished (col == width) and go back to .Louterloop if so. */
+		cmp %r11, %ecx
 		je .LouterLoop
 
-		/* Add 1 to col */
-		add $1, %esi
-
-		/* TODO: store the indicies for input and output into %r8 and %r9 respectively */
 		/* Save values in stack before calling compute_index */
 		pushq %rdi
 		pushq %rsi
@@ -281,17 +282,17 @@ imgproc_transpose:
 		pushq %rax
 		
 		/* call compute_index(input_img, row, col) for input[row][col] */
-		movq %edi, %rsi
-		movq %esi, %rdx
+		movq %r10, %rsi
+		movq %r11, %rdx
 		call compute_index
 		movq %rax, %r8
-
+		
 		/* call compute_index(input_img, row, col) for input[row][col] */
 		movq %rsi, %rdi
-		movq %esi, %rsi
-		movq %edi, %rdx
+		movq %r11, %rsi
+		movq %r10, %rdx
 		call compute_index
-		movq %rax, %r8
+		movq %rax, %r9
 
 		/* Restore values after calling compute_index */
 		popq %rax
@@ -300,13 +301,14 @@ imgproc_transpose:
 		popq %rdi
 
 		/* Get the pixel value in input[row][col] */
-		movl (IMAGE_DATA_OFFSET(%rdi, %r8, 4)), %esp
-
+		movl IMAGE_DATA_OFFSET(%rdi, %r8, 4), %r12
+	
 		/* Set output[col][row] to the pixel value */
-		movl (%esp), IMAGE_DATA_OFFSET(%rdx, %r9, 4)
+		movl %r12, IMAGE_DATA_OFFSET(%rdx, %r9, 4)
 
 	/* Epilogue */
 	.Lepilogue:
+		popq %r12
 	ret
 	
 /* Return whether or not the pixel at a given row or column is within the ellipse
