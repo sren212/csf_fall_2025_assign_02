@@ -197,11 +197,51 @@ make_pixel:
  *  %rsi - pointer to the output Image (in which the
  *         transformed pixels should be stored)
  */
-	.globl imgproc_complement
+        .globl imgproc_complement
 imgproc_complement:
-	/* TODO: implement */
+
+        movq $0, %r10 //puts outer index at zero
+
+        .Louter_loop:
+                cmp %r10, IMAGE_HEIGHT_OFFSET(%rdi) //compares current index to height
+                jge .Lepilogue //ends loop if index exceeds max value
+
+                movq $0, %r11  //puts inner index at zero to begin inner loop
+                jmp .Linner_loop //enters inner loop
+
+        .Linner_loop:
+                cmp %r11, IMAGE_WIDTH_OFFSET(%rdi) //compares current index to width
+                jge .Louter_loop //ends inner loop if inde exceeds max value
+
+                movq %rsi, %r10 //moves row into parameter for compute index
+                movq %rdx, %r10 //moves column into parameter for compute index
+                call compute_index //compues index, value now in rax
+
+        	movq %r12, %rdi //saves value of rdi into r12
+                movq %rdi, (IMAGE_DATA_OFFSET + %rax)(%rdi) //puts current pixel into rdi
+                movq %r13, %rax //saves value of rax (return value of index), in r13
+
+        	call get_a //a value is now in rax
+		movq %r14, %rax //moves the alpha-value into r14
+
 	
-	ret
+        	movq (IMAGE_DATA_OFFSET + %r13)(%rsi), (IMAGE_DATA_OFFSET + %r13)(%rdi)//moves input image data offset by index value into output data offset by index value
+
+
+		not (IMAGE_DATA_OFFSET + %r13)(%rsi) //negates all characters of output data, including alpha
+
+	
+	
+        	and (IMAGE_DATA_OFFSET + %r13)(%rsi), $4294967040 //number in binary is 24 '1's followed by 8 '0's. Bitwise &'ing here turns alpha into zero, but preserves the rest of the characters
+	
+		add (IMAGE_DATA_OFFSET + %r13)(%rsi), %r14 //re-adds stored original alpha value
+
+		jmp .Linnerloop //begins start of inner loop again
+	
+        .Lepilogue:
+        ret
+	
+	
 
 /*
  *  Transform the input image by swapping the row and column
