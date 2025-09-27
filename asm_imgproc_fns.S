@@ -10,12 +10,6 @@
 #define IMAGE_DATA_OFFSET    8
 
 /*
- * TODO: define your helper functions here.
- * Don't forget to use the .globl directive to make
- * them visible to the test code.
- */
-
-/*
  * Definitions of image transformation functions
  */
 
@@ -185,6 +179,51 @@ make_pixel:
 	popq %rcx
 	ret
 
+/* Compute the 1D index of a pixel given an image, row, and column.
+*
+* Paremeters:
+* %rdi - pointer to the input Image
+* %rsi - the row location of the pixel
+* %rdx - the column location of the pixel
+*	
+* @return 1D location of the pixel
+*/
+	.globl	compute_index
+compute_index:
+	movq %rsi, %r10 //puts row into r10
+	movl IMAGE_WIDTH_OFFSET(%rdi), %r11d //puts image width into r11
+	imulq %r11, %r10 //multiplies row by width, in accordance with formula
+	addq %rdx, %r10 //adds column value to previous produce
+	mov %r10, %rax //puts final product into return address
+	ret
+
+/*
+ *  Transform the input image by copying only those pixels that are
+ *  within an ellipse centered within the bounds of the image.
+ *  Pixels not in the ellipse should be left unmodified, which will
+ *  make them opaque black.
+ * 
+ *  Let w represent the width of the image and h represent the
+ *  height of the image. Let a=floor(w/2) and b=floor(h/2).
+ *  Consider the pixel at row b and column a is being at the
+ *  center of the image. When considering whether a specific pixel
+ *  is in the ellipse, x is the horizontal distance to the center
+ *  of the image and y is the vertical distance to the center of
+ *  the image. The pixel at the coordinates described by x and y
+ *  is in the ellipse if the following inequality is true:
+ * 
+ *    floor( (10000*x*x) / (a*a) ) + floor( (10000*y*y) / (b*b) ) <= 10000
+ * 
+ *  Parameters:
+ *  %rdi - pointer to the input Image
+ *  %rsi - pointer to the output Image (in which the
+ *                    transformed pixels should be stored)
+ */
+	.globl imgproc_ellipse
+imgproc_ellipse:
+	/* TODO: implement */
+	ret
+
 /*
  *  Transform the color component values in each input pixel
  *  by applying the bitwise complement operation. I.e., each bit
@@ -240,8 +279,6 @@ imgproc_complement:
 	
         .Lepilogue:
         ret
-	
-	
 
 /*
  *  Transform the input image by swapping the row and column
@@ -377,110 +414,6 @@ imgproc_transpose:
 	/* Epilogue */
 	.LepilogueTranspose:
 		popq %r12
-	ret
-	
-/* Return whether or not the pixel at a given row or column is within the ellipse
-*
-* Parameters:
-* %rdi - pointer to the input Image
-* %rsi - row at which the pixel is located	
-* %rdx - col the column at which the pixel is located
-*	
-* @return true or false (1 or 0) based on if the given pixel is within the defined ellipse of the image
-*/
-/*	.globl is_in_ellipse					
-is_in_ellipse:
-
-	movq %r10, %rdi  //takes in width as temp variable (a)
-	add IMAGE_HEIGHT_OFFSET, %rdi //offsets rdi to access height
-	movq %r11, %rdi //takes in height as temp variable (b)
-	shr %r10 // dives value in r10 by 2, in accordance with ellipse formula
-	shr %r11 // same as above
-
-	
-	sub %rdx, %r10 //subtracts the column from a, creates (x)
-	sub %rsi, %r11 //same as above, creates (y)
-
-	movq %r10, %r12 //copies x to r12 to begin mathematical calculations
-	movq %r11, %r13 //copies y to r13 to begin mathematical calculations
-
-	Imul %r12, %r12 //computes x^2
-	Imul %r13, %r13 //computes y^2
-	Imul $10000, %r12 //multiplies by 10000
-	Imul $10000, %r13 //multiplies by 10000
-
-	Imul %r10, %r10 //computes a^2
-	Imul %r11, %r11 //computes b^2
-
-	movq %r12, %RAX //puts dividend in AX to prepare for division
-	div %r10 //divides 10,000x^2 by a^2
-	movq %RAX, %r12 //puts divided value back into r12
-
-	movq %r13, %RAX //puts dividend in AX to prepare for division
-	div %r11 //divides 10,000y^2 by b^2
-	movq %RAX, %r13 //puts divided value back into r13
-
-	add %r12, %r13 //adds together the two parts of the equation
-	cmp $10000, %r13 //compares equation with 10000
-	jle .Ltrue //control flow based on above comparison
-	jmp .Lfalse
-
-	.Lfalse: //puts false value in return register
-	movq $0, %rax
-	jmp .Lepilogue
-
-	.Ltrue: //puts true value in return register
-	movq $1, %rax
-	jmp .Lepilogue
-
-	.Lepilogue:
-	ret
-
-	*/
-	
-/* Compute the 1D index of a pixel given an image, row, and column.
-*
-* Paremeters:
-* %rdi - pointer to the input Image
-* %rsi - the row location of the pixel
-* %rdx - the column location of the pixel
-*	
-* @return 1D location of the pixel
-*/
-	.globl	compute_index
-compute_index:
-	movq %rsi, %r10 //puts row into r10
-	movl IMAGE_WIDTH_OFFSET(%rdi), %r11d //puts image width into r11
-	imulq %r11, %r10 //multiplies row by width, in accordance with formula
-	addq %rdx, %r10 //adds column value to previous produce
-	mov %r10, %rax //puts final product into return address
-	ret
-
-/*
- *  Transform the input image by copying only those pixels that are
- *  within an ellipse centered within the bounds of the image.
- *  Pixels not in the ellipse should be left unmodified, which will
- *  make them opaque black.
- * 
- *  Let w represent the width of the image and h represent the
- *  height of the image. Let a=floor(w/2) and b=floor(h/2).
- *  Consider the pixel at row b and column a is being at the
- *  center of the image. When considering whether a specific pixel
- *  is in the ellipse, x is the horizontal distance to the center
- *  of the image and y is the vertical distance to the center of
- *  the image. The pixel at the coordinates described by x and y
- *  is in the ellipse if the following inequality is true:
- * 
- *    floor( (10000*x*x) / (a*a) ) + floor( (10000*y*y) / (b*b) ) <= 10000
- * 
- *  Parameters:
- *  %rdi - pointer to the input Image
- *  %rsi - pointer to the output Image (in which the
- *                    transformed pixels should be stored)
- */
-	.globl imgproc_ellipse
-imgproc_ellipse:
-	/* TODO: implement */
 	ret
 
 /*
